@@ -1,12 +1,25 @@
-import "../App.css";
+import "./App.css";
 import WeatherDisplay from "../src/components/weatherDisplay";
-
+import axios from "axios";
 import { useState, useEffect } from "react";
 
 function App() {
   const [city, setCity] = useState("");
+  const [weatherData, setWeatherData] = useState<any>(null);
 
-  const handleClick = async () => {};
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
+  const handleClick = async () => {
+    if (!city) return;
+    try {
+      const response = await axios.get(
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`
+      );
+      setWeatherData(response.data);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
+  };
 
   return (
     <>
@@ -22,7 +35,7 @@ function App() {
         <button
           type="submit"
           className="hover:bg-blue-600 text-white px-4 py-2 rounded-r-md"
-          // onClick={}
+          onClick={handleClick}
         >
           🔍
         </button>
