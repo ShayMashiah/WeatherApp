@@ -21,6 +21,30 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const response = await axios.get(
+              `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${latitude},${longitude}`
+            );
+            console.log(response.data);
+            setWeatherData(response.data);
+          } catch (error) {
+            console.error("Failed to fetch weather by location", error);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, [API_KEY]);
+
   return (
     <>
       <h1>Weather App</h1>
@@ -41,7 +65,7 @@ function App() {
         </button>
       </div>
 
-      {/* <WeatherDisplay weatherData={} /> */}
+      <WeatherDisplay weatherData={weatherData} />
     </>
   );
 }
