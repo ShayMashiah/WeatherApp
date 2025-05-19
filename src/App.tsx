@@ -1,21 +1,31 @@
 import "./App.css";
 import WeatherDisplay from "../src/components/weatherDisplay";
+import HistoryButton from "../src/components/historyButton";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 function App() {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
-  const handleClick = async () => {
+  const handleClick = async (cityName: string = city) => {
     if (!city) return;
     try {
       const response = await axios.get(
-        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${cityName}`
       );
       setWeatherData(response.data);
+
+      setSearchHistory((prevHistory) => {
+        const updatedHistory = [...prevHistory];
+        if (!updatedHistory.includes(city)) {
+          updatedHistory.push(city);
+        }
+        return updatedHistory;
+      });
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }
@@ -55,17 +65,24 @@ function App() {
           <input
             type="text"
             placeholder="Search for a city..."
-            className="w-full px-6 py-3 text-gray-800 dark:text-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded-l-lg"
+            className="w-full px-6 py-3 text-gray-800 dark:text-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 rounded-l-lg"
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
           <button
             type="submit"
-            className="hover:bg-yellow-500 text-white px-6 py-3 rounded-r-lg transition-colors"
-            onClick={handleClick}
+            className=" bg-gray-700 hover:bg-gray-800 text-white px-3 py-3  transition-colors"
+            onClick={() => handleClick()}
           >
             🔍
           </button>
+          <HistoryButton
+            history={searchHistory}
+            onSelect={(selectedCity) => {
+              setCity(selectedCity);
+              handleClick(selectedCity);
+            }}
+          />
         </div>
       </div>
 

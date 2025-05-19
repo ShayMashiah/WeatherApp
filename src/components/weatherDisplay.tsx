@@ -9,7 +9,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ weatherData }) => {
 
   return (
     <div className="flex justify-center mt-6">
-      <div className="text-center border border-white rounded-lg p-6 max-w-sm w-full bg-opacity-20 backdrop-blur-md bg-white/20 dark:bg-gray-800/30">
+      <div className="text-center border rounded-lg p-6 max-w-sm w-full bg-opacity-20 backdrop-blur-md bg-white/20 dark:bg-gray-700">
 
         <h2 className="text-2xl font-semibold text-white mb-2">
           {weatherData.location.name}, {weatherData.location.country}
